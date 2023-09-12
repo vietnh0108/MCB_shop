@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MBC</title>
+    <!-- Link Jquery -->
+    <script src="https://code.jquery.com/jquery-latest.js"></script>
+    <!-- Link bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <script src="js/bootstrap.min.js"></script>
+    <!-- Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.js"></script>
+    <!-- My css -->
+    <link rel="stylesheet" href="myCss/style.css" />
+    <!-- Link icons -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <!-- <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,0"
+    />
+  </head>
+  <body ng-app="myapp">
+    <!-- Header -->
+    <header ng-include="'header.html'"></header>
+    <!-- Body -->
+    <div ng-view></div>
+    <!-- Footer -->
+    <footer ng-include="'footer.html'"></footer>
+
+    <!-- Js -->
+    <!-- <script src="myJs/data.js"></script> -->
+    <script>
+      var indexCart = 0;
+      var app = angular.module("myapp", ["ngRoute"]);
+      app.controller(
+        "myctrl",
+        function ($scope, $rootScope, $routeParams, $http) {
+          //Format tiền
+          $scope.formatMoney = function (x) {
+            var money = "";
+            money = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return money;
+          };
+
+          $scope.thanhToan = function () {
+            alert("Đã thanh toán 💚💚💚");
+          };
+
+          $scope.products = [];
+          // $rootScope.cart = [];
+          $http.get("myJs/data.json").then(function (response) {
+            $scope.products = response.data;
+            $scope.index = $scope.products.findIndex(
+              (record) => record.id == $routeParams.url
+            );
+          });
+
+          $scope.search = "";
+          $scope.kinds = $routeParams.kind;
+
+          //Thêm sản phẩm
+          $scope.addCart = function (p) {
+            if (typeof $rootScope.cart == "undefined") {
+              $rootScope.cart = [];
+            }
+            if ($rootScope.cart.filter((i) => i.id == p.id).length == 0) {
+              $rootScope.cart.push(p);
+              $rootScope.cart[indexCart].quantity = p.quantity;
+              indexCart++;
+            }
+            if (typeof $rootScope.cart != "undefined") {
+              //Có giỏ hàng mới tính tổng
+              for (var i = 0; i < $rootScope.cart.length; i++) {
+                $rootScope.sumMoney =
+                  $rootScope.sumMoney +
+                  $rootScope.cart[i].quantity * $rootScope.cart[i].price;
+              }
+            }
+          };
+          $rootScope.sumMoney = 0;
+          //Tính tổng tiền bên giỏ hàng
+          if (typeof $rootScope.cart != "undefined") {
+            //Có giỏ hàng mới tính tổng
+            for (var i = 0; i < $rootScope.cart.length; i++) {
+              $rootScope.sumMoney =
+                $rootScope.sumMoney +
+                $rootScope.cart[i].quantity * $rootScope.cart[i].price;
+            }
+          }
+          //Nhấn nút Cộng để thêm sản phẩm
+          $scope.addClick = function (index) {
+            $rootScope.cart[index].quantity =
+              $rootScope.cart[index].quantity + 1;
+            if (typeof $rootScope.cart != "undefined") {
+              $rootScope.sumMoney = 0;
+              for (var i = 0; i < $rootScope.cart.length; i++) {
+                $rootScope.sumMoney =
+                  $rootScope.sumMoney +
+                  $rootScope.cart[i].quantity * $rootScope.cart[i].price;
+              }
+            }
+          };
+          //Nhấn nút Trừ để trừ sản phẩm
+          $scope.subClick = function (index) {
+            if ($rootScope.cart[index].quantity == 1) {
+              $scope.delProduct(index);
+            } else {
+              $rootScope.cart[index].quantity =
+                $rootScope.cart[index].quantity - 1;
+            }
+            if (typeof $rootScope.cart != "undefined") {
+              $rootScope.sumMoney = 0;
+              for (var i = 0; i < $rootScope.cart.length; i++) {
+                $rootScope.sumMoney =
+                  $rootScope.sumMoney +
+                  $rootScope.cart[i].quantity * $rootScope.cart[i].price;
+              }
+            }
+          };
+          //Xóa sản phẩm trong giỏ hàng
+          $scope.delProduct = function (index) {
+            $rootScope.cart.splice(index, 1);
+            if (typeof $rootScope.cart != "undefined") {
+              $rootScope.sumMoney = 0;
+              for (var i = 0; i < $rootScope.cart.length; i++) {
+                $rootScope.sumMoney =
+                  $rootScope.sumMoney +
+                  $rootScope.cart[i].quantity * $rootScope.cart[i].price;
+              }
+            }
+          };
+
+          //Sắp xếp
+          $scope.tang = function () {
+            $scope.sort = "price";
+          };
+          $scope.giam = function () {
+            $scope.sort = "-price";
+          };
+
+          //hiện thị sản phẩm
+          $scope.hienthi = false;
+          $scope.showProducts = function () {
+            $scope.hienthi = true;
+          };
+          $scope.hideProducts = function () {
+            $scope.hienthi = false;
+          };
+
+          //hiện thanh tìm kiếm
+          // $scope.flag = false;
+          // $scope.showToolSearch = function () {
+          //   if (($scope.flag = true)) {
+          //     $scope.flag = false;
+          //     return;
+          //   }
+          //   $scope.flag = true;
+          // };
+          // // $scope.hideToolSearch = function () {
+          // //   $scope.flag = false;
+          // // };
+        }
+      );
+
+      app.config(function ($routeProvider) {
+        $routeProvider
+          .when("/home", {
+            templateUrl: "home.html?" + Math.random(),
+            controller: "myctrl",
+          })
+          .when("/detail/:url", {
+            templateUrl: "detail-product.html?" + Math.random(),
+            controller: "myctrl",
+          })
+          .when("/cart", {
+            templateUrl: "cart.html?" + Math.random(),
+            controller: "myctrl",
+          })
+          .when("/list-products", {
+            templateUrl: "list-products.html?" + Math.random(),
+            controller: "myctrl",
+          })
+          .when("/find-product", {
+            templateUrl: "find-product.html?" + Math.random(),
+            controller: "myctrl",
+          })
+          .when("/kind-product/:kind", {
+            templateUrl: "kind-product.html?" + Math.random(),
+            controller: "myctrl",
+          })
+          .otherwise({
+            templateUrl: "home.html",
+            controller: "myctrl",
+          });
+      });
+
+      // app.run(function ($rootScope) {
+      //   $rootScope.$on("$routeChangeStart", function () {
+      //     $rootScope.loading = true;
+      //   });
+      //   $rootScope.$on("$routeChangeSuccess", function () {
+      //     $rootScope.loading = false;
+      //   });
+      //   $rootScope.$on("$routeChangeError", function () {
+      //     $rootScope.loading = false;
+      //     alert("Lỗi, không tải được template");
+      //   });
+      // });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+@media only screen and (min-width: 1200px) {
+  .col-lg-offset-1 {
+    margin-left: 8.33333333%;
+  }
+}
+
+.details-prod p {
+  font-size: 14px;
+}
+
+.details-prod input {
+  outline: none;
+}
+
+.item-policy h4 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.item-policy span {
+  font-size: 16px;
+}

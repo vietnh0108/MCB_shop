@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="myCss/cart.css" />
+  </head>
+  <body>
+    <section class="bread-crumb wrap-background pt-2 pb-4">
+      <div class="container">
+        <nav class="breadcrumb bg-transparent mb-2">
+          <a class="breadcrumb-item" href="#">Trang chủ</a>
+          <a class="breadcrumb-item active" href="#">Giỏ hàng</a>
+        </nav>
+        <h2 class="pl-3 pr-3">Giỏ hàng</h2>
+      </div>
+    </section>
+    <section class="wrap-background">
+      <div class="container">
+        <div class="row">
+          <div class="bg-white col-lg-9">
+            <table class="table">
+              <tr>
+                <th>Tên sản phẩm</th>
+                <th>Hình ảnh</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th></th>
+              </tr>
+              <tr ng-repeat="p in cart track by $index">
+                <td>{{p.name}}</td>
+                <td><img width="100px" src="{{p.image}}" alt="" /></td>
+                <td>{{p.price | number}}</td>
+                <td>
+                  <span class="cursor-pointer" ng-click="subClick($index)"
+                    >-</span
+                  >
+                  {{p.quantity}}
+                  <span class="cursor-pointer" ng-click="addClick($index)"
+                    >+</span
+                  >
+                </td>
+                <td>{{p.price*p.quantity | number}}</td>
+                <td>
+                  <span class="cursor-pointer" ng-click="delProduct($index)"
+                    ><span class="material-symbols-outlined">
+                      delete_forever
+                    </span></span
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div
+            class="col-lg-3"
+            style="background-color: rgba(230, 230, 230, 0.801)"
+          >
+            <div class="totals p-4">
+              <div class="total_money mb-4">
+                <span style="font-size: 15px">Thành tiền:</span>
+                <span
+                  class="float-right font-weight-bold"
+                  style="color: #6cc9ca; font-size: 20px"
+                  >{{formatMoney(sumMoney)}}₫</span
+                >
+              </div>
+              <hr />
+              <div class="grp_btn">
+                <button
+                  class="w-100 btn btn-info pt-2 pb-2 font-weight-bold mb-3"
+                >
+                  Tiến hành thanh toán
+                </button>
+                <a href="#!list-products"
+                  ><button
+                    class="btn-continue w-100 btn pt-2 pb-2 font-weight-bold"
+                  >
+                    Tiếp tục mua hàng
+                  </button></a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

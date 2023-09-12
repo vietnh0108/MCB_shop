@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- My css -->
+    <link rel="stylesheet" href="myCss/style.css" />
+    <link rel="stylesheet" href="myCss/list-prod.css" />
+  </head>
+  <body ng-controller="myctrl">
+    <section class="bread-crumb wrap-background pt-2 pb-4">
+      <div class="container">
+        <nav class="breadcrumb bg-transparent mb-2">
+          <a class="breadcrumb-item" href="#!home">Trang chủ</a>
+          <a class="breadcrumb-item active" href="#">Tìm kiếm</a>
+        </nav>
+        <h2 class="pl-3 pr-3">Tìm kiếm</h2>
+      </div>
+    </section>
+    <section class="featured-product_content mt-3">
+      <div class="container">
+        <div class="row">
+          <div
+            class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4 items"
+            ng-repeat="p in products | filter : search"
+          >
+            <div class="card border-0">
+              <div class="card-img">
+                <a href="#!detail/{{p.id}}">
+                  <img class="w-100" src="{{p.image}}" alt="" />
+                </a>
+              </div>
+              <div class="card-info pt-1 pl-3 pr-3 pb-3">
+                <h3>
+                  <a href="#">{{p.name}}</a>
+                </h3>
+                <div class="info-detail">
+                  <div
+                    class="special-price d-inline-block font-weight-bold mr-3"
+                  >
+                    <span>{{formatMoney(p.price)}}₫</span>
+                  </div>
+
+                  <span class="status-item">{{p.status}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
